@@ -2,10 +2,8 @@
  * book_search.js
  * 
  *  Implementation of the function: findSearchTermInBooks().
- *  By Joseph Esquivel
+ *  Implemented and Tested by Joseph Esquivel
  *  
- * 
- * 
  */
 
 /**
@@ -15,8 +13,17 @@
  * @returns {JSON} - Search results.
  * */ 
  function findSearchTermInBooks(searchTerm, scannedTextObj) {
+    // Type-checking
+    if (typeof searchTerm !== 'string') {
+        throw new Error('Invalid input: searchTerm must be a string.');
+    }
+    
+    if (!Array.isArray(scannedTextObj) || !scannedTextObj.every(obj => typeof obj === 'object')) {
+        throw new Error('Invalid input: scannedTextObj must be an array of JSON objects.');
+    }
+     
      // Create result object, returned in current condition if no results found.
-    var result = {
+    const result = {
         "SearchTerm": searchTerm,
         "Results": []
     };
@@ -28,7 +35,7 @@
             const { Page, Line, Text } = line;
             
             if (Text.includes(searchTerm)) {
-                // Update result object for later return
+                // Update result object with match
                 result.Results.push({
                     "ISBN": ISBN,
                     "Page": Page,
@@ -64,8 +71,34 @@ const twentyLeaguesIn = [
         ] 
     }
 ]
+
+
+
+const notTwentyLeaguesIn = [
+    {
+        "Title": "Not Twenty Thousand Leagues Under the Sea",
+        "ISBN": "4780000528532",
+        "Content": [
+            {
+                "Page": 12,
+                "Line": 1,
+                "Text": "As the final minutes closed in, it was time"
+            },
+            {
+                "Page": 12,
+                "Line": 2,
+                "Text": "to submit the implementation of the word search."
+            },
+            {
+                "Page": 12,
+                "Line": 3,
+                "Text": "The programmer wrote tests and commited them."
+            } 
+        ] 
+    }
+]
     
-/** Example output object */
+/** Example output objects below */
 const twentyLeaguesOut = {
     "SearchTerm": "the",
     "Results": [
@@ -77,7 +110,7 @@ const twentyLeaguesOut = {
     ]
 }
 
-
+// Test Case for "simply" with expected output:
 const test3ExpectedOutput = {
     "SearchTerm": "simply",
     "Results": [
@@ -89,7 +122,7 @@ const test3ExpectedOutput = {
     ]
 };
 
-
+// Test Case for "and" with expected output:
 const test4ExpectedOutput = {
     "SearchTerm": "and",
     "Results": [
@@ -106,6 +139,7 @@ const test4ExpectedOutput = {
     ]
 };
 
+// Test Case for "The" with epected output:
 const test5ExpectedOutput = {
     "SearchTerm": "The",
     "Results": [
@@ -113,6 +147,36 @@ const test5ExpectedOutput = {
             "ISBN": "9780000528531",
             "Page": 31,
             "Line": 8
+        }
+    ]
+};
+
+
+// Test Case for "I" with expected output:
+const test6ExpectedOutput = {
+    "SearchTerm": "I",
+    "Results": [
+        {
+            "ISBN": "9780000528531",
+            "Page": 31,
+            "Line": 10
+        }
+    ]
+};
+
+// Test Case for "i" with expected output:
+const test7ExpectedOutput = {
+    "SearchTerm": "i",
+    "Results": [
+        {
+            "ISBN": "9780000528531",
+            "Page": 31,
+            "Line": 8
+        },
+        {
+            "ISBN": "9780000528531",
+            "Page": 31,
+            "Line": 9
         }
     ]
 };
@@ -126,12 +190,6 @@ const test5ExpectedOutput = {
                                                       
  */
 
-/* We have provided two unit tests. They're really just `if` statements that 
- * output to the console. We've provided two tests as examples, and 
- * they should pass with a correct implementation of `findSearchTermInBooks`. 
- * 
- * Please add your unit tests below.
- * */
 
 /** We can check that, given a known input, we get a known output. */
 const test1result = findSearchTermInBooks("the", twentyLeaguesIn);
@@ -164,7 +222,7 @@ if (JSON.stringify(test3ExpectedOutput) === JSON.stringify(test3Result)) {
     console.log("Received:", test3Result);
 }
 
-// Test Result Sensitivity, "darkn-ness":
+// Test for multiple search matches
 const test4Result = findSearchTermInBooks("and", twentyLeaguesIn);
 if (JSON.stringify(test4ExpectedOutput) === JSON.stringify(test4Result)) {
     console.log("PASS: Test 4");
@@ -185,16 +243,22 @@ if (JSON.stringify(test5ExpectedOutput) === JSON.stringify(test5result)) {
     console.log("Received:", test5result);
 }
 
+// Test character sensitivity, "I" vs "i":
+const test6result = findSearchTermInBooks("I", twentyLeaguesIn);
+if (JSON.stringify(test6ExpectedOutput) === JSON.stringify(test6result)) {
+    console.log("PASS: Test 6");
+} else {
+    console.log("FAIL: Test 6");
+    console.log("Expected:", test6ExpectedOutput);
+    console.log("Received:", test6result);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+// Test character sensitivity, "I" vs "i":
+const test7result = findSearchTermInBooks("i", twentyLeaguesIn);
+if (JSON.stringify(test7ExpectedOutput) === JSON.stringify(test7result)) {
+    console.log("PASS: Test 7");
+} else {
+    console.log("FAIL: Test 7");
+    console.log("Expected:", test7ExpectedOutput);
+    console.log("Received:", test7result);
+}
