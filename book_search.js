@@ -15,11 +15,19 @@
  function findSearchTermInBooks(searchTerm, scannedTextObj) {
     // Type-checking
     if (typeof searchTerm !== 'string') {
-        throw new Error('Invalid input: searchTerm must be a string.');
+        throw new Error('Invalid input: searchTerm must be a string!');
     }
     
     if (!Array.isArray(scannedTextObj) || !scannedTextObj.every(obj => typeof obj === 'object')) {
         throw new Error('Invalid input: scannedTextObj must be an array of JSON objects.');
+    }
+    
+    // Empty search term, return an empty result.
+    if (searchTerm === '') {
+        return {
+            "SearchTerm": searchTerm,
+            "Results": []
+        };
     }
      
      // Create result object, returned in current condition if no results found.
@@ -73,7 +81,7 @@ const twentyLeaguesIn = [
 ]
 
 
-
+// Another JSON object to test
 const notTwentyLeaguesIn = [
     {
         "Title": "Not Twenty Thousand Leagues Under the Sea",
@@ -92,7 +100,7 @@ const notTwentyLeaguesIn = [
             {
                 "Page": 12,
                 "Line": 3,
-                "Text": "The programmer wrote tests and commited them."
+                "Text": "The programmer wrote tests and commmitted them."
             } 
         ] 
     }
@@ -181,6 +189,65 @@ const test7ExpectedOutput = {
     ]
 };
 
+// Test case for 'negative' results
+const test8ExpectedOutput = {
+    "SearchTerm": "American",
+    "Results": [] // No expected result
+};
+
+// Test case for 'negative' results
+const test9ExpectedOutput = {
+    "SearchTerm": "later",
+    "Results": [] // No expected result
+    
+};
+
+// Test case search for "programmer" in a different set of books
+const test10ExpectedOutput = {
+    "SearchTerm": "programmer",
+    "Results": [
+        {
+            "ISBN": "4780000528532",
+            "Page": 12,
+            "Line": 3
+        }
+    ]
+};
+
+// Test case search for "inertia" in a different set of books
+const test11ExpectedOutput = {
+    "SearchTerm": "inertia",
+    "Results": [] // No expected result!
+};
+
+// Test case Search for an empty string
+const test12ExpectedOutput = {
+    "SearchTerm": "",
+    "Results": [] // No expected result
+};
+
+// Test case Search for a space " " - All lines included
+const test13ExpectedOutput = {
+    "SearchTerm": " ",
+    "Results": [
+        {
+            "ISBN": "4780000528532",
+            "Page": 12,
+            "Line": 1
+        },
+        {
+            "ISBN": "4780000528532",
+            "Page": 12,
+            "Line": 2
+        },
+        {
+            "ISBN": "4780000528532",
+            "Page": 12,
+            "Line": 3
+        }
+    ]
+};
+
 /*
  _   _ _   _ ___ _____   _____ _____ ____ _____ ____  
 | | | | \ | |_ _|_   _| |_   _| ____/ ___|_   _/ ___| 
@@ -261,4 +328,63 @@ if (JSON.stringify(test7ExpectedOutput) === JSON.stringify(test7result)) {
     console.log("FAIL: Test 7");
     console.log("Expected:", test7ExpectedOutput);
     console.log("Received:", test7result);
+}
+
+
+// Test for no result returned
+const test8Result = findSearchTermInBooks("American", twentyLeaguesIn);
+if (JSON.stringify(test8ExpectedOutput) === JSON.stringify(test8Result)) {
+    console.log("PASS: Test 8");
+} else {
+    console.log("FAIL: Test 8");
+    console.log("Expected:", test8ExpectedOutput);
+    console.log("Received:", test8Result);
+}
+
+// Test again for no result returned
+const test9Result = findSearchTermInBooks("later", twentyLeaguesIn);
+if (JSON.stringify(test9ExpectedOutput) === JSON.stringify(test9Result)) {
+    console.log("PASS: Test 9");
+} else {
+    console.log("FAIL: Test 9");
+    console.log("Expected:", test9ExpectedOutput);
+    console.log("Received:", test9Result);
+}
+
+// Test for result on new JSON object
+const test10Result = findSearchTermInBooks("programmer", notTwentyLeaguesIn);
+if (JSON.stringify(test10ExpectedOutput) === JSON.stringify(test10Result)) {
+    console.log("PASS: Test 10");
+} else {
+    console.log("FAIL: Test 10");
+    console.log("Expected:", test10ExpectedOutput);
+    console.log("Received:", test10Result);
+}
+
+// Test for no result on new JSON object
+const test11Result = findSearchTermInBooks("inertia", notTwentyLeaguesIn);
+if (JSON.stringify(test11ExpectedOutput) === JSON.stringify(test11Result)) {
+    console.log("PASS: Test 11");
+} else {
+    console.log("FAIL: Test 11");
+    console.log("Expected:", test11ExpectedOutput);
+    console.log("Received:", test11Result);
+}
+// Test for an empty string, to compare with a space
+const test12Result = findSearchTermInBooks("", notTwentyLeaguesIn);
+if (JSON.stringify(test12ExpectedOutput) === JSON.stringify(test12Result)) {
+    console.log("PASS: Test 12");
+} else {
+    console.log("FAIL: Test 12");
+    console.log("Expected:", test12ExpectedOutput);
+    console.log("Received:", test12Result);
+}
+// Test for a space, to compare with empty string.
+const test13Result = findSearchTermInBooks(" ", notTwentyLeaguesIn);
+if (JSON.stringify(test13ExpectedOutput) === JSON.stringify(test13Result)) {
+    console.log("PASS: Test 13");
+} else {
+    console.log("FAIL: Test 13");
+    console.log("Expected:", test13ExpectedOutput);
+    console.log("Received:", test13Result);
 }
